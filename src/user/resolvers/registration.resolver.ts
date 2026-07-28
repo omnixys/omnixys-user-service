@@ -3,6 +3,9 @@ import { RegisterService } from '../services/register.service.js';
 import { Args, Query, Resolver } from '@nestjs/graphql';
 // import { ClientIp, Location, RequestCookies, TenantId, Device, Local } from '@omnixys/context';
 // import { CookieAuthGuard } from '@omnixys/security';
+import { getLogger } from '@omnixys/logger';
+
+const logger = getLogger(RegistrationResolver.name);
 
 @Resolver()
 export class RegisterResolver {
@@ -20,6 +23,7 @@ export class RegisterResolver {
   // @UseGuards(CookieAuthGuard)
   @Query(() => Boolean)
   async checkUsername(@Args('username') username: string): Promise<boolean> {
+    logger.debug('check_username', { username });
     return this.service.isUsernameAvailable(username);
   }
 
@@ -35,7 +39,7 @@ export class RegisterResolver {
     // @RequestCookies() cookies: any,
   ): Promise<boolean> {
     // console.log({ tenantId, ip, cookies, locale, location, device });
-
+    logger.debug('check_email', { email });
     return this.service.checkEmail(email);
   }
 }

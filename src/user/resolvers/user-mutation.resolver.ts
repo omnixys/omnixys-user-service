@@ -20,6 +20,9 @@ import {
   RoleGuard,
   Roles,
 } from '@omnixys/security';
+import { getLogger } from '@omnixys/logger';
+
+const logger = getLogger(UserMutationResolver.name);
 
 @Resolver(() => UserPayload)
 export class UserMutationResolver {
@@ -33,6 +36,7 @@ export class UserMutationResolver {
   @UseGuards(CookieAuthGuard, RoleGuard)
   @Roles(RealmRoleType.ADMIN)
   async update(@Args('input') input: UpdateUserInput): Promise<UserPayload> {
+    logger.info('update_user', { userId: input.id });
     const user = await this.service.update(input);
     return userMapper.toPayload(user);
   }
@@ -50,6 +54,7 @@ export class UserMutationResolver {
       throw new AuthenticationRequiredException();
     }
 
+    logger.info('update_me', { userId: currentUser.id });
     const user = await this.service.update({
       ...input,
       id: currentUser.id,
@@ -65,6 +70,7 @@ export class UserMutationResolver {
   @UseGuards(CookieAuthGuard, RoleGuard)
   @Roles(RealmRoleType.ADMIN)
   async delete(@Args('id', { type: () => ID }) id: string): Promise<boolean> {
+    logger.info('delete_user', { userId: id });
     return this.service.delete(id);
   }
 
@@ -83,6 +89,7 @@ export class UserMutationResolver {
       throw new AuthenticationRequiredException();
     }
 
+    logger.info('add_phone_numbers', { userId: currentUser.id, count: phoneNumbers.length });
     await this.service.addPhoneNumber({
       userId: currentUser.id,
       phoneNumbers,
@@ -102,6 +109,7 @@ export class UserMutationResolver {
       throw new AuthenticationRequiredException();
     }
 
+    logger.info('remove_phone_numbers', { userId: currentUser.id, ids: phoneNumberIds });
     await this.service.removePhoneNumber({
       userId: currentUser.id,
       ids: phoneNumberIds,
@@ -125,6 +133,7 @@ export class UserMutationResolver {
       throw new AuthenticationRequiredException();
     }
 
+    logger.info('add_contact', { userId: currentUser.id });
     await this.service.addContact({ ...input, userId: currentUser.id });
     return true;
   }
@@ -139,6 +148,7 @@ export class UserMutationResolver {
       throw new AuthenticationRequiredException();
     }
 
+    logger.info('remove_contact', { userId: currentUser.id, contactId });
     await this.service.removeContact(currentUser.id, contactId);
     return true;
   }
