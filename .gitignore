@@ -232,3 +232,5 @@ zookeeper-data/
 .secrets
 __tests__
 log
+
+src/prisma/generated/
