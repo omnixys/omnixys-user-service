@@ -3,6 +3,21 @@
 All notable changes in this project will be documented in this file.
 
 
+## [3.2.0](https://github.com/omnixys/user-service/compare/v3.1.0...v3.2.0) (2026-07-28)
+
+### Other
+
+* **Other:** resolve build and lint errors in resolver files ([](https://github.com/omnixys/user-service/commit/5ca8c8b2d7facfba1a853aa8f87f3cef633ffc84))
+
+### Prisma
+
+* **Prisma:** add generated prisma files ([](https://github.com/omnixys/user-service/commit/8100c2a0ae685295f3369f14b5eb3d7d97c137c5))
+* **Prisma:** remove generated prisma files ([](https://github.com/omnixys/user-service/commit/7b20811a4ba41a416b815123aa48231d3b69e311))
+
+### User
+
+* **User:** add logger to user-mutation and registration resolvers ([](https://github.com/omnixys/user-service/commit/41e9e6d040c40101ee112d9d012b903c7143514e))
+
 ## [3.1.0](https://github.com/omnixys/user-service/compare/v3.0.0...v3.1.0) (2026-07-24)
 
 ### Deps
