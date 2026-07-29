@@ -66,3 +66,8 @@ export type Interest = Prisma.InterestModel
  * 
  */
 export type CustomerInterest = Prisma.CustomerInterestModel
+/**
+ * Model AnalyticsOutbox
+ * 
+ */
+export type AnalyticsOutbox = Prisma.AnalyticsOutboxModel

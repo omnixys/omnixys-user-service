@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { User } from '../../prisma/generated/client.js';
+import { AnalyticsOutboxService } from '../../analytics/analytics-outbox.service.js';
 import { PrismaService } from '../../prisma/prisma.service.js';
 import { UserNotFoundException } from '../errors/user.error.js';
 import { Injectable } from '@nestjs/common';
@@ -31,6 +32,7 @@ export class UserWriteService {
     private readonly prisma: PrismaService,
     private readonly kafkaProducerService: KafkaProducerService,
     private readonly logger: OmnixysLogger,
+    private readonly analyticsOutbox: AnalyticsOutboxService,
   ) {
     this.log = this.logger.log(this.constructor.name);
   }
@@ -49,12 +51,16 @@ export class UserWriteService {
       throw new UserNotFoundException(id);
     }
 
-    const user = await this.prisma.user.update({
-      where: { id },
-      data: {
-        status: patch.status,
-        userType: patch.userType ?? undefined,
-      },
+    const user = await this.prisma.$transaction(async (tx) => {
+      const result = await tx.user.update({
+        where: { id },
+        data: {
+          status: patch.status,
+          userType: patch.userType ?? undefined,
+        },
+      });
+      await this.enqueueProfileUpdated(tx, id, 'account', patch);
+      return result;
     });
 
     this.log.debug('Database user update completed: userId=%s', id);
@@ -197,16 +203,19 @@ export class UserWriteService {
     },
   ): Promise<void> {
     this.log.debug('Updating personal info in database: userId=%s', userId);
-    await this.prisma.personalInfo.update({
-      where: { id: userId },
-      data: {
-        email: patch.email ?? undefined,
-        firstName: patch.firstName ?? undefined,
-        lastName: patch.lastName ?? undefined,
-        birthDate: patch.birthDate ?? undefined,
-        gender: patch.gender ?? undefined,
-        maritalStatus: patch.maritalStatus ?? undefined,
-      },
+    await this.prisma.$transaction(async (tx) => {
+      await tx.personalInfo.update({
+        where: { id: userId },
+        data: {
+          email: patch.email ?? undefined,
+          firstName: patch.firstName ?? undefined,
+          lastName: patch.lastName ?? undefined,
+          birthDate: patch.birthDate ?? undefined,
+          gender: patch.gender ?? undefined,
+          maritalStatus: patch.maritalStatus ?? undefined,
+        },
+      });
+      await this.enqueueProfileUpdated(tx, userId, 'personal', patch);
     });
     this.log.info('Personal info update completed: userId=%s', userId);
 
@@ -264,13 +273,16 @@ export class UserWriteService {
     },
   ): Promise<void> {
     this.log.debug('Updating customer profile in database: userId=%s', userId);
-    await this.prisma.customer.update({
-      where: { id: userId },
-      data: {
-        subscribed: patch.subscribed ?? undefined,
-        state: patch.state ?? undefined,
-        contactOptions: patch.contactOptions ?? undefined,
-      },
+    await this.prisma.$transaction(async (tx) => {
+      await tx.customer.update({
+        where: { id: userId },
+        data: {
+          subscribed: patch.subscribed ?? undefined,
+          state: patch.state ?? undefined,
+          contactOptions: patch.contactOptions ?? undefined,
+        },
+      });
+      await this.enqueueProfileUpdated(tx, userId, 'customer', patch);
     });
     this.log.info('Customer profile update completed: userId=%s', userId);
   }
@@ -287,17 +299,40 @@ export class UserWriteService {
     },
   ): Promise<void> {
     this.log.debug('Updating employee profile in database: userId=%s', userId);
-    await this.prisma.employee.update({
-      where: { id: userId },
-      data: {
-        department: patch.department ?? undefined,
-        position: patch.position ?? undefined,
-        role: patch.role ?? undefined,
-        salary: patch.salary ?? undefined,
-        hireDate: patch.hireDate ?? undefined,
-        isExternal: patch.isExternal ?? undefined,
-      },
+    await this.prisma.$transaction(async (tx) => {
+      await tx.employee.update({
+        where: { id: userId },
+        data: {
+          department: patch.department ?? undefined,
+          position: patch.position ?? undefined,
+          role: patch.role ?? undefined,
+          salary: patch.salary ?? undefined,
+          hireDate: patch.hireDate ?? undefined,
+          isExternal: patch.isExternal ?? undefined,
+        },
+      });
+      await this.enqueueProfileUpdated(tx, userId, 'employee', patch);
     });
     this.log.info('Employee profile update completed: userId=%s', userId);
+  }
+
+  private enqueueProfileUpdated(
+    tx: Parameters<AnalyticsOutboxService['enqueue']>[0],
+    userId: string,
+    profileSection: string,
+    patch: Record<string, unknown>,
+  ): Promise<unknown> {
+    return this.analyticsOutbox.enqueue(tx, 'user.profile.updated.v1', {
+      eventName: 'ProfileUpdated',
+      aggregateId: userId,
+      aggregateType: 'User',
+      subjectId: userId,
+      properties: {
+        profileSection,
+        changedFieldCount: Object.values(patch).filter(
+          (value) => value !== undefined,
+        ).length,
+      },
+    });
   }
 }

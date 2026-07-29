@@ -405,7 +405,8 @@ export const ModelName = {
   Contact: 'Contact',
   InterestCategory: 'InterestCategory',
   Interest: 'Interest',
-  CustomerInterest: 'CustomerInterest'
+  CustomerInterest: 'CustomerInterest',
+  AnalyticsOutbox: 'AnalyticsOutbox'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -421,7 +422,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "personalInfo" | "customer" | "employee" | "phoneNumber" | "contact" | "interestCategory" | "interest" | "customerInterest"
+    modelProps: "user" | "personalInfo" | "customer" | "employee" | "phoneNumber" | "contact" | "interestCategory" | "interest" | "customerInterest" | "analyticsOutbox"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -1091,6 +1092,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    AnalyticsOutbox: {
+      payload: Prisma.$AnalyticsOutboxPayload<ExtArgs>
+      fields: Prisma.AnalyticsOutboxFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.AnalyticsOutboxFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AnalyticsOutboxPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.AnalyticsOutboxFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AnalyticsOutboxPayload>
+        }
+        findFirst: {
+          args: Prisma.AnalyticsOutboxFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AnalyticsOutboxPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.AnalyticsOutboxFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AnalyticsOutboxPayload>
+        }
+        findMany: {
+          args: Prisma.AnalyticsOutboxFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AnalyticsOutboxPayload>[]
+        }
+        create: {
+          args: Prisma.AnalyticsOutboxCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AnalyticsOutboxPayload>
+        }
+        createMany: {
+          args: Prisma.AnalyticsOutboxCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.AnalyticsOutboxCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AnalyticsOutboxPayload>[]
+        }
+        delete: {
+          args: Prisma.AnalyticsOutboxDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AnalyticsOutboxPayload>
+        }
+        update: {
+          args: Prisma.AnalyticsOutboxUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AnalyticsOutboxPayload>
+        }
+        deleteMany: {
+          args: Prisma.AnalyticsOutboxDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.AnalyticsOutboxUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.AnalyticsOutboxUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AnalyticsOutboxPayload>[]
+        }
+        upsert: {
+          args: Prisma.AnalyticsOutboxUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AnalyticsOutboxPayload>
+        }
+        aggregate: {
+          args: Prisma.AnalyticsOutboxAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateAnalyticsOutbox>
+        }
+        groupBy: {
+          args: Prisma.AnalyticsOutboxGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AnalyticsOutboxGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.AnalyticsOutboxCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AnalyticsOutboxCountAggregateOutputType> | number
+        }
+      }
+    }
   }
 } & {
   other: {
@@ -1253,12 +1328,39 @@ export const CustomerInterestScalarFieldEnum = {
 export type CustomerInterestScalarFieldEnum = (typeof CustomerInterestScalarFieldEnum)[keyof typeof CustomerInterestScalarFieldEnum]
 
 
+export const AnalyticsOutboxScalarFieldEnum = {
+  id: 'id',
+  tenantId: 'tenantId',
+  topic: 'topic',
+  payload: 'payload',
+  correlationId: 'correlationId',
+  actorId: 'actorId',
+  attempts: 'attempts',
+  nextAttemptAt: 'nextAttemptAt',
+  lockedAt: 'lockedAt',
+  lockedBy: 'lockedBy',
+  publishedAt: 'publishedAt',
+  deadLetteredAt: 'deadLetteredAt',
+  lastError: 'lastError',
+  createdAt: 'createdAt'
+} as const
+
+export type AnalyticsOutboxScalarFieldEnum = (typeof AnalyticsOutboxScalarFieldEnum)[keyof typeof AnalyticsOutboxScalarFieldEnum]
+
+
 export const SortOrder = {
   asc: 'asc',
   desc: 'desc'
 } as const
 
 export type SortOrder = (typeof SortOrder)[keyof typeof SortOrder]
+
+
+export const JsonNullValueInput = {
+  JsonNull: JsonNull
+} as const
+
+export type JsonNullValueInput = (typeof JsonNullValueInput)[keyof typeof JsonNullValueInput]
 
 
 export const QueryMode = {
@@ -1275,6 +1377,15 @@ export const NullsOrder = {
 } as const
 
 export type NullsOrder = (typeof NullsOrder)[keyof typeof NullsOrder]
+
+
+export const JsonNullValueFilter = {
+  DbNull: DbNull,
+  JsonNull: JsonNull,
+  AnyNull: AnyNull
+} as const
+
+export type JsonNullValueFilter = (typeof JsonNullValueFilter)[keyof typeof JsonNullValueFilter]
 
 
 
@@ -1485,6 +1596,20 @@ export type EnumInterestKeyFieldRefInput<$PrismaModel> = FieldRefInputType<$Pris
 export type ListEnumInterestKeyFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'InterestKey[]'>
     
 
+
+/**
+ * Reference to a field of type 'Json'
+ */
+export type JsonFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Json'>
+    
+
+
+/**
+ * Reference to a field of type 'QueryMode'
+ */
+export type EnumQueryModeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'QueryMode'>
+    
+
 /**
  * Batch Payload for updateMany & deleteMany & createMany
  */
@@ -1645,6 +1770,7 @@ export type GlobalOmitConfig = {
   interestCategory?: Prisma.InterestCategoryOmit
   interest?: Prisma.InterestOmit
   customerInterest?: Prisma.CustomerInterestOmit
+  analyticsOutbox?: Prisma.AnalyticsOutboxOmit
 }
 
 /* Types for Logging */

@@ -13,7 +13,7 @@ import { UserWriteService } from './services/user-write.service.js';
 import { Module } from '@nestjs/common';
 
 @Module({
-  imports: [],
+  imports: [AnalyticsModule],
   providers: [
     RegisterResolver,
     UserMutationResolver,
@@ -33,3 +33,4 @@ import { Module } from '@nestjs/common';
   exports: [UserWriteService, UserReadService, RegisterService],
 })
 export class UserModule {}
+import { AnalyticsModule } from '../analytics/analytics.module.js';

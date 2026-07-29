@@ -59,3 +59,36 @@ test('invalid cached registration state uses a structured error', () => {
   assert.equal(error.code, 'USER_STATE_INVALID');
   assert.deepEqual(error.metadata, {});
 });
+
+test('profile update and analytics fact share one transaction', async () => {
+  const transactionClient = {
+    personalInfo: {
+      async update() {},
+    },
+  };
+  let factTransaction;
+  const service = new UserWriteService(
+    {
+      async $transaction(work) {
+        return work(transactionClient);
+      },
+      personalInfo: { async findUnique() { return null; } },
+    },
+    {},
+    logger,
+    {
+      async enqueue(tx, topic, fact) {
+        factTransaction = tx;
+        assert.equal(topic, 'user.profile.updated.v1');
+        assert.equal(fact.eventName, 'ProfileUpdated');
+        assert.deepEqual(fact.properties, {
+          profileSection: 'personal',
+          changedFieldCount: 1,
+        });
+      },
+    },
+  );
+
+  await service.updatePersonalInfo('user-1', { firstName: 'Changed' });
+  assert.equal(factTransaction, transactionClient);
+});
