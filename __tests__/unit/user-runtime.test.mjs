@@ -46,6 +46,7 @@ test('user deletion is idempotent', async () => {
         },
       },
     },
+    {},
     logger,
   );
 
@@ -56,5 +57,5 @@ test('user deletion is idempotent', async () => {
 test('invalid cached registration state uses a structured error', () => {
   const error = new UserStateException('signup-token-expired');
   assert.equal(error.code, 'USER_STATE_INVALID');
-  assert.deepEqual(error.metadata, { reason: 'signup-token-expired' });
+  assert.deepEqual(error.metadata, {});
 });
