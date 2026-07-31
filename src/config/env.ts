@@ -47,6 +47,7 @@ export const env = {
    */
   NODE_ENV: process.env.NODE_ENV ?? 'development',
   DEFAULT_TENANT_ID: requiredTenantId(),
+  TRUSTED_PROXY_ADDRESSES: process.env.TRUSTED_PROXY_ADDRESSES ?? '',
 
   SCHEMA_TARGET: process.env.SCHEMA_TARGET ?? 'true',
 

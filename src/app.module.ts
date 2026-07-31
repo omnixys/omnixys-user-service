@@ -25,14 +25,14 @@ import { PrismaModule } from './prisma/prisma.module.js';
 import { UserModule } from './user/user.module.js';
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
-import { ValkeyModule } from '@omnixys/cache';
-import { ContextModule } from '@omnixys/context';
-import { OmnixysGraphQLModule } from '@omnixys/graphql';
-import { OmnixysHttpModule } from '@omnixys/http';
-import { KafkaModule } from '@omnixys/kafka';
-import { LoggerModule } from '@omnixys/logger';
-import { ObservabilityModule } from '@omnixys/observability';
-import { SecurityModule } from '@omnixys/security';
+import { ValkeyModule } from '@omnixys/cache-ts';
+import { ContextModule, trustedProxyPolicyFromAddresses } from '@omnixys/context-ts';
+import { OmnixysGraphQLModule } from '@omnixys/graphql-ts';
+import { OmnixysHttpModule } from '@omnixys/http-ts';
+import { KafkaModule } from '@omnixys/kafka-ts';
+import { LoggerModule } from '@omnixys/logger-ts';
+import { ObservabilityModule } from '@omnixys/observability-ts';
+import { SecurityModule } from '@omnixys/security-ts';
 
 const {
   SCHEMA_TARGET,
@@ -48,7 +48,15 @@ const {
 
 @Module({
   imports: [
-    ContextModule.forRoot(),
+    ContextModule.forRoot({
+      tenant: {
+        mode: env.NODE_ENV === 'production' ? 'strict' : 'legacy',
+        ...(env.DEFAULT_TENANT_ID ? { defaultTenantId: env.DEFAULT_TENANT_ID } : {}),
+      },
+      trustedProxyPolicy: trustedProxyPolicyFromAddresses(
+        env.TRUSTED_PROXY_ADDRESSES,
+      ),
+    }),
     OmnixysHttpModule.forRoot({ serviceName: SERVICE }),
     SecurityModule.forRoot({
       jwt: {
