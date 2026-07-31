@@ -17,6 +17,7 @@
 
 import 'dotenv/config';
 import process from 'node:process';
+import { isUUID } from 'class-validator';
 
 /**
  * Environment variable configuration for the Node-based server.
@@ -29,6 +30,14 @@ import process from 'node:process';
  * - Missing variables get sensible defaults (only for DEV).
  * - Booleans are converted correctly from "true"/"false" strings.
  */
+function requiredTenantId(): string {
+  const value = process.env.DEFAULT_TENANT_ID;
+  if (!value || !isUUID(value, '4')) {
+    throw new Error('[ENV] DEFAULT_TENANT_ID must be a valid UUID v4');
+  }
+  return value;
+}
+
 export const env = {
   /**
    * Environment type:
@@ -37,6 +46,7 @@ export const env = {
    * - `test` → Test execution
    */
   NODE_ENV: process.env.NODE_ENV ?? 'development',
+  DEFAULT_TENANT_ID: requiredTenantId(),
 
   SCHEMA_TARGET: process.env.SCHEMA_TARGET ?? 'true',
 
