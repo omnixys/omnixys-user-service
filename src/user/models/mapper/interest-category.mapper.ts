@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
 import type { InterestCategory } from '../../../prisma/generated/client.js';
 import type { InterestCategoryPayload } from '../payload/interest-category.payload.js';
-import type { InterestCategoryType } from '@omnixys/contracts';
+import type { InterestCategoryType } from '@omnixys/contracts-ts';
 
 export class InterestCategoryMapper {
   static toPayload(

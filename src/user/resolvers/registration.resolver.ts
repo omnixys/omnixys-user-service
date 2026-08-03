@@ -1,9 +1,9 @@
 import { RegisterService } from '../services/register.service.js';
 // import { UseGuards } from '@nestjs/common';
 import { Args, Query, Resolver } from '@nestjs/graphql';
-// import { ClientIp, Location, RequestCookies, TenantId, Device, Local } from '@omnixys/context';
-// import { CookieAuthGuard } from '@omnixys/security';
-import { getLogger } from '@omnixys/logger';
+// import { ClientIp, Location, RequestCookies, TenantId, Device, Local } from '@omnixys/context-ts';
+// import { CookieAuthGuard } from '@omnixys/security-ts';
+import { getLogger } from '@omnixys/logger-ts';
 
 const logger = getLogger('RegisterResolver');
 

@@ -1,4 +1,4 @@
-import type { PhoneNumberInput } from '@omnixys/graphql';
+import type { PhoneNumberInput } from '@omnixys/graphql-ts';
 
 export interface UserDTO {
   id: string;

@@ -7,8 +7,8 @@ import { UserPayload } from '../models/payload/user.payload.js';
 import { UserReadService } from '../services/user-read.service.js';
 import { UseGuards } from '@nestjs/common';
 import { Args, ID, Query, Resolver } from '@nestjs/graphql';
-import { RealmRoleType } from '@omnixys/contracts';
-import { OmnixysLogger } from '@omnixys/logger';
+import { RealmRoleType } from '@omnixys/contracts-ts';
+import { OmnixysLogger } from '@omnixys/logger-ts';
 import {
   AuthenticationRequiredException,
   CookieAuthGuard,
@@ -16,7 +16,7 @@ import {
   CurrentUserData,
   RoleGuard,
   Roles,
-} from '@omnixys/security';
+} from '@omnixys/security-ts';
 
 @Resolver(() => UserPayload)
 export class UserQueryResolver {

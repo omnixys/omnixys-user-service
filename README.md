@@ -1,6 +1,6 @@
 # Omnixys User Service
 
-The User service owns user profiles, personal information, customer and employee extensions, contacts, phone numbers, and interest catalog reads. Authentication credentials and token policy remain owned by `authentication-service` and `@omnixys/security`.
+The User service owns user profiles, personal information, customer and employee extensions, contacts, phone numbers, and interest catalog reads. Authentication credentials and token policy remain owned by `authentication-service` and `@omnixys/security-ts`.
 
 ## Runtime architecture
 
@@ -8,8 +8,8 @@ The User service owns user profiles, personal information, customer and employee
 - Kafka consumes verified identity lifecycle events and creates or removes local user aggregates.
 - PostgreSQL is accessed through Prisma.
 - Valkey stores short-lived registration state owned by the authentication workflow.
-- `@omnixys/context` is the canonical source for request, actor, tenant, correlation, and trace metadata.
-- `@omnixys/logger` and `@omnixys/observability` enrich logs and spans from that context.
+- `@omnixys/context-ts` is the canonical source for request, actor, tenant, correlation, and trace metadata.
+- `@omnixys/logger-ts` and `@omnixys/observability-ts` enrich logs and spans from that context.
 
 Administrative profile reads and mutations require the `ADMIN` business role. Self-service mutations always derive the target user ID from the verified principal; client-supplied ownership IDs are not trusted.
 

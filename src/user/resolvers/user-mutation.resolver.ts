@@ -4,15 +4,15 @@ import {
   PhoneNumberInput,
   UpdateMeInput,
   UpdateUserInput,
-} from '@omnixys/graphql';
+} from '@omnixys/graphql-ts';
 
 import { UserPayload } from '../models/payload/user.payload.js';
 import { UserWriteService } from '../services/user-write.service.js';
 
 import { UseGuards } from '@nestjs/common';
 import { Args, ID, Mutation, Resolver } from '@nestjs/graphql';
-import { RealmRoleType } from '@omnixys/contracts';
-import { getLogger } from '@omnixys/logger';
+import { RealmRoleType } from '@omnixys/contracts-ts';
+import { getLogger } from '@omnixys/logger-ts';
 import {
   AuthenticationRequiredException,
   CookieAuthGuard,
@@ -20,7 +20,7 @@ import {
   CurrentUserData,
   RoleGuard,
   Roles,
-} from '@omnixys/security';
+} from '@omnixys/security-ts';
 
 const logger = getLogger('UserMutationResolver');
 

@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { User } from '../../prisma/generated/client.js';
 import { AnalyticsOutboxService } from '../../analytics/analytics-outbox.service.js';
+import { User } from '../../prisma/generated/client.js';
 import { PrismaService } from '../../prisma/prisma.service.js';
 import { UserNotFoundException } from '../errors/user.error.js';
 import { Injectable } from '@nestjs/common';
@@ -9,10 +9,10 @@ import {
   MaritalStatusType,
   StatusType,
   UserProjectionChangedDTO,
-} from '@omnixys/contracts';
-import { AddContactInput, PhoneNumberInput, UpdateUserInput } from '@omnixys/graphql';
-import { KafkaProducerService, KafkaTopics } from '@omnixys/kafka';
-import { OmnixysLogger } from '@omnixys/logger';
+} from '@omnixys/contracts-ts';
+import { AddContactInput, PhoneNumberInput, UpdateUserInput } from '@omnixys/graphql-ts';
+import { KafkaProducerService, KafkaTopics } from '@omnixys/kafka-ts';
+import { OmnixysLogger } from '@omnixys/logger-ts';
 
 export interface AddPhoneNumbersDTO {
   userId: string;
@@ -329,9 +329,7 @@ export class UserWriteService {
       subjectId: userId,
       properties: {
         profileSection,
-        changedFieldCount: Object.values(patch).filter(
-          (value) => value !== undefined,
-        ).length,
+        changedFieldCount: Object.values(patch).filter((value) => value !== undefined).length,
       },
     });
   }

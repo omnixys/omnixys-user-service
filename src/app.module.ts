@@ -17,7 +17,7 @@
 
 import { ValkeyAdapterModule } from './adapter/valkey-adapter.module.js';
 import { AdminModule } from './admin/admin.module.js';
-import { BannerService } from './banner.service.js';
+import { BannerService } from './config/banner.service.js';
 import { env } from './config/env.js';
 import { HandlerModule } from './handlers/handler.module.js';
 import { HealthModule } from './health/health.module.js';
@@ -37,25 +37,50 @@ import { SecurityModule } from '@omnixys/security-ts';
 const {
   SCHEMA_TARGET,
   SERVICE,
-  KAFKA_BROKER,
-  TEMPO_URI,
-  VALKEY_URL,
-  VALKEY_PASSWORD,
+  NODE_ENV,
+
   KC_URL,
   KC_REALM,
+
+  TENANT_SERVICE_URL,
+  TENANT_GRPC_SERVICE_TOKEN,
+
+  KAFKA_BROKER,
+  KAFKA_IDEMPOTENCY_ENABLE,
+  KAFKA_IDEMPOTENCY_TTL,
+  KAFKA_RETRY,
+
+  OTEL_URI,
+  OTEL_TRANSPORT_MODE,
+  OTEL_SAMPLING_RATIO,
+  PROMETHEUS_ENABLE,
+  PROMETHEUS_PORT,
+
+  VALKEY_URL,
+  VALKEY_PASSWORD,
+
   ENCRYPTION_KEY,
+  DEFAULT_TENANT_ID,
+
+  RATE_LIMIT_ENABLE,
+  RATE_LIMIT_REQUESTS,
+  RATE_LIMIT_WINDOW,
+
+  LOG_BATCH_ENABLE,
+  LOG_BATCH_FLUSH_INTERVAL,
+  LOG_BATCH_MAX_SIZE,
+
+  TRUSTED_PROXY_ADDRESSES,
 } = env;
 
 @Module({
   imports: [
     ContextModule.forRoot({
       tenant: {
-        mode: env.NODE_ENV === 'production' ? 'strict' : 'legacy',
-        ...(env.DEFAULT_TENANT_ID ? { defaultTenantId: env.DEFAULT_TENANT_ID } : {}),
+        mode: NODE_ENV === 'production' ? 'strict' : 'legacy',
+        ...(DEFAULT_TENANT_ID ? { defaultTenantId: DEFAULT_TENANT_ID } : {}),
       },
-      trustedProxyPolicy: trustedProxyPolicyFromAddresses(
-        env.TRUSTED_PROXY_ADDRESSES,
-      ),
+      trustedProxyPolicy: trustedProxyPolicyFromAddresses(TRUSTED_PROXY_ADDRESSES),
     }),
     OmnixysHttpModule.forRoot({ serviceName: SERVICE }),
     SecurityModule.forRoot({
@@ -64,10 +89,15 @@ const {
         jwksUri: `${KC_URL}/realms/${KC_REALM}/protocol/openid-connect/certs`,
       },
 
+      tenantVerification: {
+        url: TENANT_SERVICE_URL,
+        callerToken: TENANT_GRPC_SERVICE_TOKEN,
+      },
+
       rateLimit: {
-        enabled: true,
-        defaultLimit: 100,
-        defaultWindowMs: 60000,
+        enabled: RATE_LIMIT_ENABLE,
+        defaultLimit: RATE_LIMIT_REQUESTS,
+        defaultWindowMs: RATE_LIMIT_WINDOW,
         imports: [ValkeyAdapterModule],
       },
 
@@ -100,20 +130,22 @@ const {
       brokers: [KAFKA_BROKER],
       groupId: `${SERVICE}-group`,
       serviceName: SERVICE,
+      retry: { maxRetries: KAFKA_RETRY },
+      idempotency: { enabled: KAFKA_IDEMPOTENCY_ENABLE, ttlSeconds: KAFKA_IDEMPOTENCY_TTL },
     }),
 
     ObservabilityModule.forRoot({
       serviceName: SERVICE,
 
       otel: {
-        endpoint: TEMPO_URI,
-        transport: 'http',
-        samplingRatio: 1,
+        endpoint: OTEL_URI,
+        transport: OTEL_TRANSPORT_MODE as 'http' | 'grpc',
+        samplingRatio: OTEL_SAMPLING_RATIO,
       },
 
       metrics: {
-        port: 9464,
-        enabled: true,
+        port: PROMETHEUS_PORT,
+        enabled: PROMETHEUS_ENABLE,
       },
     }),
 
@@ -122,9 +154,9 @@ const {
       registerGlobalInterceptor: true,
 
       batch: {
-        enabled: true,
-        maxSize: 50,
-        flushInterval: 2000,
+        enabled: LOG_BATCH_ENABLE,
+        maxSize: LOG_BATCH_MAX_SIZE,
+        flushInterval: LOG_BATCH_FLUSH_INTERVAL,
       },
     }),
     AdminModule,

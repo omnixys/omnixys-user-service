@@ -17,99 +17,131 @@
 
 import 'dotenv/config';
 import process from 'node:process';
-import { isUUID } from 'class-validator';
 
-/**
- * Environment variable configuration for the Node-based server.
- *
- * This file centralizes all environment parameters provided
- * through `.env` or system variables.
- *
- * @remarks
- * - All values are explicitly typed.
- * - Missing variables get sensible defaults (only for DEV).
- * - Booleans are converted correctly from "true"/"false" strings.
- */
-function requiredTenantId(): string {
-  const value = process.env.DEFAULT_TENANT_ID;
-  if (!value || !isUUID(value, '4')) {
-    throw new Error('[ENV] DEFAULT_TENANT_ID must be a valid UUID v4');
-  }
-  return value;
+type EnvValue = string | number | boolean;
+interface GetEnvOptions<T extends EnvValue = string> {
+  required?: boolean;
+  transform?: (value: string) => T;
 }
 
+function getEnv(
+  key: string,
+  fallback?: string,
+  options?: GetEnvOptions<string>,
+): string;
+function getEnv<T extends EnvValue>(
+  key: string,
+  fallback: string,
+  options: GetEnvOptions<T> & { transform: (value: string) => T },
+): T;
+function getEnv(
+  key: string,
+  fallback?: string,
+  options?: GetEnvOptions,
+): EnvValue {
+  const raw = process.env[key];
+  if (!raw) {
+    if (options?.required && process.env.NODE_ENV === 'production') {
+      throw new Error(`[ENV] Missing required env: ${key}`);
+    }
+    return options?.transform && fallback !== undefined
+      ? options.transform(fallback)
+      : (fallback ?? '');
+  }
+  return options?.transform ? options.transform(raw) : raw;
+}
+
+const toBool = (value: string): boolean => value === 'true';
+const toNumber = (value: string): number => Number(value);
+
 export const env = {
-  /**
-   * Environment type:
-   * - `production` → Cloud/Production mode
-   * - `development` → Local development
-   * - `test` → Test execution
-   */
-  NODE_ENV: process.env.NODE_ENV ?? 'development',
-  DEFAULT_TENANT_ID: requiredTenantId(),
-  TRUSTED_PROXY_ADDRESSES: process.env.TRUSTED_PROXY_ADDRESSES ?? '',
+  NODE_ENV: getEnv('NODE_ENV', 'development'),
+  PORT: getEnv('PORT', '4000', { transform: toNumber }),
+  GRPC_PORT: getEnv('GRPC_PORT', '50051', {
+    required: true,
+    transform: toNumber,
+  }),
+  SERVICE: getEnv('SERVICE', 'user'),
+  TRUSTED_PROXY_ADDRESSES: getEnv('TRUSTED_PROXY_ADDRESSES', ''),
 
-  SCHEMA_TARGET: process.env.SCHEMA_TARGET ?? 'true',
+  SCHEMA_TARGET: getEnv('SCHEMA_TARGET', 'true'),
+  HTTPS: getEnv('HTTPS', 'false', { transform: toBool }),
+  KEYS_PATH: getEnv('KEYS_PATH', './keys'),
 
-  /** Default log settings */
-  LOG_DEFAULT: process.env.LOG_DEFAULT === 'true',
-  LOG_DIRECTORY: process.env.LOG_DIRECTORY ?? 'log',
-  LOG_FILE_DEFAULT_NAME: process.env.LOG_FILE_DEFAULT_NAME ?? 'server.log',
-  LOG_PRETTY: process.env.LOG_PRETTY === 'true',
-  LOG_LEVEL: process.env.LOG_LEVEL ?? 'info',
+  LOG_DEFAULT: getEnv('LOG_DEFAULT', 'false', { transform: toBool }),
+  LOG_DIRECTORY: getEnv('LOG_DIRECTORY', 'log'),
+  LOG_FILE_DEFAULT_NAME: getEnv('LOG_FILE_DEFAULT_NAME', 'server.log'),
+  LOG_PRETTY: getEnv('LOG_PRETTY', 'false', { transform: toBool }),
+  LOG_LEVEL: getEnv('LOG_LEVEL', 'info'),
+  LOG_BATCH_ENABLE: getEnv('LOG_BATCH_ENABLE', 'true', { transform: toBool }),
+  LOG_BATCH_MAX_SIZE: getEnv('LOG_BATCH_MAX_SIZE', '50', {
+    transform: toNumber,
+  }),
+  LOG_BATCH_FLUSH_INTERVAL: getEnv('LOG_BATCH_FLUSH_INTERVAL', '2000', {
+    transform: toNumber,
+  }),
 
-  /** HTTPS enable flag */
-  HTTPS: process.env.HTTPS === 'true',
+  OTEL_URI: getEnv('OTEL_EXPORTER_OTLP_ENDPOINT', 'http://localhost:4318'),
+  OTEL_TRANSPORT_MODE: getEnv('OTEL_TRANSPORT_MODE', 'http', {
+    required: true,
+  }),
+  OTEL_SAMPLING_RATIO: getEnv('OTEL_SAMPLING_RATIO', '1', {
+    transform: toNumber,
+  }),
+  TEMPO_URI: getEnv('TEMPO_URI', 'http://localhost:4318'),
+  PROMETHEUS_ENABLE: getEnv('PROMETHEUS_ENABLE', 'true', { transform: toBool }),
+  PROMETHEUS_PORT: getEnv('PROMETHEUS_PORT', '9464', { transform: toNumber }),
 
-  /** Path to key/certificate files */
-  KEYS_PATH: process.env.KEYS_PATH ?? './keys',
+  KAFKA_BROKER: getEnv('KAFKA_BROKER', 'localhost:9092'),
+  KAFKA_RETRY: getEnv('KAFKA_RETRY', '5', { transform: toNumber }),
+  KAFKA_IDEMPOTENCY_ENABLE: getEnv('KAFKA_IDEMPOTENCY_ENABLE', 'true', {
+    transform: toBool,
+  }),
+  KAFKA_IDEMPOTENCY_TTL: getEnv('KAFKA_IDEMPOTENCY_TTL', '86400', {
+    transform: toNumber,
+  }),
 
-  /** Tempo tracing endpoint */
-  TEMPO_URI:
-    process.env.OTEL_EXPORTER_OTLP_ENDPOINT ??
-    process.env.TEMPO_URI ??
-    'http://localhost:4318',
+  VALKEY_URL: getEnv('VALKEY_URL', 'valkey://localhost:6380'),
+  VALKEY_PASSWORD: getEnv('VALKEY_PASSWORD', '', { required: true }),
 
-  /** Port on which the Node/NestJS server runs */
-  PORT: Number(process.env.PORT ?? 4000),
-  COOKIE_SECRET: process.env.COOKIE_SECRET ?? 'omnixys-development-secret',
+  RATE_LIMIT_ENABLE: getEnv('RATE_LIMIT_ENABLE', 'true', { transform: toBool }),
+  RATE_LIMIT_REQUESTS: getEnv('RATE_LIMIT_REQUEST', '100', {
+    transform: toNumber,
+  }),
+  RATE_LIMIT_WINDOW: getEnv('RATE_LIMIT_WINDOW', '60000', {
+    transform: toNumber,
+  }),
 
-  /** Keycloak / OAuth client configuration */
-  KC_CLIENT_SECRET: process.env.KC_CLIENT_SECRET ?? '',
-  KC_URL: process.env.KC_URL ?? 'http://localhost:18080/auth',
-  KC_REALM: process.env.KC_REALM ?? 'camunda-platform',
-  KC_CLIENT_ID: process.env.KC_CLIENT_ID ?? 'camunda-identity',
-  KC_ADMIN_USERNAME: process.env.KC_ADMIN_USERNAME ?? 'admin',
-  KC_ADMIN_PASSWORD: process.env.KC_ADMIN_PASSWORD ?? 'admin',
+  KC_CLIENT_SECRET: getEnv('KC_CLIENT_SECRET', '', { required: true }),
+  KC_URL: getEnv('KC_URL', 'http://localhost:18080/auth'),
+  KC_REALM: getEnv('KC_REALM', 'camunda-platform'),
+  KC_CLIENT_ID: getEnv('KC_CLIENT_ID', 'camunda-identity'),
+  KC_ADMIN_USERNAME: getEnv('KC_ADMIN_USERNAME', 'admin', { required: true }),
+  KC_ADMIN_PASSWORD: getEnv('KC_ADMIN_PASSWORD', '', { required: true }),
+  KC_TLS_REJECT_UNAUTHORIZED: getEnv('KC_TLS_REJECT_UNAUTHORIZED', 'true', {
+    transform: toBool,
+  }),
 
-  /** Kafka configuration */
-  KAFKA_BROKER: process.env.KAFKA_BROKER ?? 'localhost:9092',
-  SERVICE: process.env.SERVICE ?? 'SERVICE',
+  COOKIE_SECRET: getEnv('COOKIE_SECRET', 'omnixys-development-secret', {
+    required: true,
+  }),
+  ENCRYPTION_KEY: getEnv('ENCRYPTION_KEY', '', { required: true }),
 
-  /** gRPC server port for inter-service communication */
-  GRPC_PORT: Number(process.env.GRPC_PORT ?? 50051),
+  DEFAULT_TENANT_ID: getEnv('DEFAULT_TENANT_ID', ''),
+  TENANT_SERVICE_URL: getEnv('TENANT_SERVICE_URL', 'localhost:50052', {
+    required: true,
+  }),
+  TENANT_GRPC_SERVICE_TOKEN: getEnv(
+    'TENANT_GRPC_SERVICE_TOKEN',
+    'dev-tenant-service-token',
+    { required: true },
+  ),
 
-  /** Health endpoints */
-  KEYCLOAK_HEALTH_URL: process.env.KEYCLOAK_HEALTH_URL ?? '',
-  TEMPO_HEALTH_URL: process.env.TEMPO_HEALTH_URL ?? '',
-  PROMETHEUS_HEALTH_URL: process.env.PROMETHEUS_HEALTH_URL ?? '',
+  KEYCLOAK_HEALTH_URL: getEnv('KEYCLOAK_HEALTH_URL', ''),
+  TEMPO_HEALTH_URL: getEnv('TEMPO_HEALTH_URL', ''),
+  PROMETHEUS_HEALTH_URL: getEnv('PROMETHEUS_HEALTH_URL', ''),
 
-  /** GraphQL / PubSub */
-  GQL_PUBSUB_INMEMORY: process.env.GQL_PUBSUB_INMEMORY === 'true',
-
-  PC_JWE_KEY: process.env.PC_JWE_KEY ?? '',
-  PC_JWE_KEY_2: process.env.PC_JWE_KEY_2 ?? '',
-  PC_TTL_SEC: Number(process.env.PC_TTL_SEC ?? 60 * 60 * 24 * 30),
-
-  /** Redis configuration */
-  VALKEY_URL: process.env.VALKEY_URL ?? 'valkey://localhost:6380',
-  VALKEY_PASSWORD: process.env.VALKEY_PASSWORD ?? 'DeinStarkesPasswort',
-
-  DATABASE_URL: process.env.DATABASE_URL ?? 'DATABASE_URL',
-  DATABASE_URL_LOCALE: process.env.DATABASE_URL_LOCALE ?? 'DATABASE_URL_LOCALE',
-  SHADOW_DATABASE_URL: process.env.SHADOW_DATABASE_URL ?? 'SHADOW_DATABASE_URL',
-
-  ENCRYPTION_KEY: process.env.ENCRYPTION_KEY ?? 'omnixys-encryption-key',
+  DATABASE_URL: getEnv('DATABASE_URL', '', { required: true }),
 } as const;
 
 // /**

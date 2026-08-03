@@ -30,10 +30,10 @@ import {
   FastifyAdapter,
   type NestFastifyApplication,
 } from '@nestjs/platform-fastify';
-import '@omnixys/graphql';
-import { createGrpcServerOptions } from '@omnixys/grpc/servers';
-import { OmnixysLogger } from '@omnixys/logger';
-import { registerFastifyTracing } from '@omnixys/observability';
+import '@omnixys/graphql-ts';
+import { createGrpcServerOptions } from '@omnixys/grpc-ts/servers';
+import { OmnixysLogger } from '@omnixys/logger-ts';
+import { registerFastifyTracing } from '@omnixys/observability-ts';
 import { fileURLToPath } from 'node:url';
 import 'reflect-metadata';
 
@@ -200,7 +200,7 @@ async function bootstrap(): Promise<void> {
   app.connectMicroservice(
     createGrpcServerOptions({
       package: 'omnixys.user',
-      protoPath: fileURLToPath(import.meta.resolve('@omnixys/grpc/proto')),
+      protoPath: fileURLToPath(import.meta.resolve('@omnixys/grpc-ts/proto')),
       url: `0.0.0.0:${env.GRPC_PORT}`,
     }),
   );

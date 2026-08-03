@@ -12,7 +12,7 @@ import {
 import { PrismaService } from '../../prisma/prisma.service.js';
 import { UserNotFoundException } from '../errors/user.error.js';
 import { Injectable } from '@nestjs/common';
-import { OmnixysLogger } from '@omnixys/logger';
+import { OmnixysLogger } from '@omnixys/logger-ts';
 
 /**
  * userReadService

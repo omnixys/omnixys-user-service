@@ -4,7 +4,7 @@ import {
   n2u,
   type GenderType,
   type MaritalStatusType,
-} from '@omnixys/contracts';
+} from '@omnixys/contracts-ts';
 
 export class PersonalInfoMapper {
   static toPayload(info: PersonalInfo): PersonalInfoPayload {

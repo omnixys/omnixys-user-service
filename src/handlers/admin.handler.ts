@@ -16,7 +16,7 @@
 //  * For more information, visit <https://www.gnu.org/licenses/>.
 //  */
 
-// import { KafkaEventHandler, KafkaHandler } from '@omnixys/kafka';
+// import { KafkaEventHandler, KafkaHandler } from '@omnixys/kafka-ts';
 // import { AdminService } from '../admin/admin.service.js';
 // import { LoggerPlusService } from '../logger/logger-plus.service.js';
 // import { Injectable } from '@nestjs/common';

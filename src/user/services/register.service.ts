@@ -3,11 +3,16 @@
 import { type User } from '../../prisma/generated/client.js';
 import { PrismaService } from '../../prisma/prisma.service.js';
 import { Injectable } from '@nestjs/common';
-import { PhoneNumberDTO, StatusType, UserType, UserProjectionChangedDTO } from '@omnixys/contracts';
-import { CreateUserInput } from '@omnixys/graphql';
-import { KafkaProducerService, KafkaTopics } from '@omnixys/kafka';
-import { OmnixysLogger } from '@omnixys/logger';
-import { TraceRunner } from '@omnixys/observability';
+import {
+  PhoneNumberDTO,
+  StatusType,
+  UserType,
+  UserProjectionChangedDTO,
+} from '@omnixys/contracts-ts';
+import { CreateUserInput } from '@omnixys/graphql-ts';
+import { KafkaProducerService, KafkaTopics } from '@omnixys/kafka-ts';
+import { OmnixysLogger } from '@omnixys/logger-ts';
+import { TraceRunner } from '@omnixys/observability-ts';
 
 export interface CreateGuestUserDTO {
   email: string;

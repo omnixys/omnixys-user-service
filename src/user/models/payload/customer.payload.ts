@@ -1,5 +1,5 @@
 import { Field, GraphQLISODateTime, ID, ObjectType } from '@nestjs/graphql';
-import { ContactOptionsType, StatusType } from '@omnixys/contracts';
+import { ContactOptionsType, StatusType } from '@omnixys/contracts-ts';
 
 @ObjectType()
 export class CustomerPayload {
