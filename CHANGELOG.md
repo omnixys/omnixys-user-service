@@ -3,6 +3,25 @@
 All notable changes in this project will be documented in this file.
 
 
+## [3.3.0](https://github.com/omnixys/user-service/compare/v3.2.0...v3.3.0) (2026-08-03)
+
+### Analytics
+
+* **Analytics:** publish profile update facts ([](https://github.com/omnixys/user-service/commit/bea03e3c28d0d50cc8cfbbbd7ea416016bc63cb4))
+
+### Config
+
+* **Config:** require and validate DEFAULT_TENANT_ID ([](https://github.com/omnixys/user-service/commit/96f88e131482a786d92cd2eff1ff510851c8262c))
+* **Config:** support trusted proxy address policy ([](https://github.com/omnixys/user-service/commit/dc9e0e1b611c6006e0c1129f516ff4e116cee1ca))
+
+### Errors
+
+* **Errors:** adopt secure user error handling ([](https://github.com/omnixys/user-service/commit/cf53843e8c586b1d6cd5bab041784cd8f6624012))
+
+### Tenant
+
+* **Tenant:** enable tenant verification in SecurityModule ([](https://github.com/omnixys/user-service/commit/12ea08bad27c98a39845ab1d5dde969f21ca85e5))
+
 ## [3.2.0](https://github.com/omnixys/user-service/compare/v3.1.0...v3.2.0) (2026-07-28)
 
 ### Other
