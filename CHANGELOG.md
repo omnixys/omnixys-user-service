@@ -3,6 +3,20 @@
 All notable changes in this project will be documented in this file.
 
 
+## [3.3.1](https://github.com/omnixys/user-service/compare/v3.3.0...v3.3.1) (2026-08-19)
+
+### Agent
+
+* **Agent:** add repository development instructions ([](https://github.com/omnixys/user-service/commit/d98e0be2d119412bc72e487b9519f397f64f5eb5))
+
+### Build
+
+* **Build:** replace deprecated rate-limit skip with allowList and ignore prisma generated lint ([](https://github.com/omnixys/user-service/commit/274755848421299a07d7638dafad06e772480cc3))
+
+### User
+
+* **User:** exclude health endpoints from rate-limit and bump version ([](https://github.com/omnixys/user-service/commit/1c3191c721d3a35cb528bdfce670bb4965c8fd3b))
+
 ## [3.3.0](https://github.com/omnixys/user-service/compare/v3.2.0...v3.3.0) (2026-08-03)
 
 ### Analytics
