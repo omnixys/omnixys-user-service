@@ -3,6 +3,12 @@
 All notable changes in this project will be documented in this file.
 
 
+## [3.3.3](https://github.com/omnixys/user-service/compare/v3.3.2...v3.3.3) (2026-08-23)
+
+### Logger
+
+* **Logger:** fix terminal logger ([](https://github.com/omnixys/user-service/commit/5be78f79224e0c60b20d6ac407f939e10f6ba7f8))
+
 ## [3.3.2](https://github.com/omnixys/user-service/compare/v3.3.1...v3.3.2) (2026-08-23)
 
 ### Observability
