@@ -3,6 +3,12 @@
 All notable changes in this project will be documented in this file.
 
 
+## [3.3.2](https://github.com/omnixys/user-service/compare/v3.3.1...v3.3.2) (2026-08-23)
+
+### Observability
+
+* **Observability:** update dependency ([](https://github.com/omnixys/user-service/commit/1b8ca9e2a783708d79982b001c8d5573109a8320))
+
 ## [3.3.1](https://github.com/omnixys/user-service/compare/v3.3.0...v3.3.1) (2026-08-19)
 
 ### Agent
