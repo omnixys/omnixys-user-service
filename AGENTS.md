@@ -10,7 +10,7 @@
 Omnixys User Service – user profiles, admin, analytics.
 
 - Repository path: `services/user` (relative to the Omnixys root)
-- Package: `user-service` (version: 3.3.0)
+- Package: `user-service` (version: 3.4.0)
 - Runtime: Node >=25.8.2 (pnpm >=10.33.0)
 - Kind: Service
 
