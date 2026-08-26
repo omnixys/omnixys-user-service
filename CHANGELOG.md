@@ -3,6 +3,12 @@
 All notable changes in this project will be documented in this file.
 
 
+## [3.4.2](https://github.com/omnixys/user-service/compare/v3.4.1...v3.4.2) (2026-08-26)
+
+### Build
+
+* **Build:** fix build errors ([](https://github.com/omnixys/user-service/commit/4c722e0e9ac081d2dc807ac7a0565afb39e16b36))
+
 ## [3.4.1](https://github.com/omnixys/user-service/compare/v3.4.0...v3.4.1) (2026-08-26)
 
 ### Deps
