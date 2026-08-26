@@ -3,6 +3,13 @@
 All notable changes in this project will be documented in this file.
 
 
+## [3.4.1](https://github.com/omnixys/user-service/compare/v3.4.0...v3.4.1) (2026-08-26)
+
+### Deps
+
+* **Deps:** update logger to 3.2.6 ([](https://github.com/omnixys/user-service/commit/b61549bf179b523dc9e9b36c2446c0c99c427c8e))
+* **Deps:** update shared TypeScript packages ([](https://github.com/omnixys/user-service/commit/d066575bbe03608ab104fc4f64e0bddbe978438e))
+
 ## [3.4.0](https://github.com/omnixys/user-service/compare/v3.3.3...v3.4.0) (2026-08-26)
 
 ### Deps
