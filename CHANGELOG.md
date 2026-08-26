@@ -3,6 +3,16 @@
 All notable changes in this project will be documented in this file.
 
 
+## [3.4.0](https://github.com/omnixys/user-service/compare/v3.3.3...v3.4.0) (2026-08-26)
+
+### Deps
+
+* **Deps:** update omnixys ts packages ([](https://github.com/omnixys/user-service/commit/9111b054a47d9df38b8cc84bc4181a7caa30c4ec))
+
+### Otel
+
+* **Otel:** add otel logs ([](https://github.com/omnixys/user-service/commit/21f0c23b2a01ade330ddeaa5abc9ed4907c4e6b7))
+
 ## [3.3.3](https://github.com/omnixys/user-service/compare/v3.3.2...v3.3.3) (2026-08-23)
 
 ### Logger
