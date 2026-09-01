@@ -11,8 +11,15 @@ datasource db {
 /// USER SERVICE SCHEMA
 /// ------------------------------------------------------------
 model User {
-  id       String @id @default(uuid()) @map("id") @db.Uuid
-  username String @unique @map("username")
+  // Transitional identity model (Phase 2): User.id is BOTH the primary key and,
+  // in the current provisioning flow, the Keycloak subject (id == K, sourced from the
+  // Kafka userId). keycloakSub is prepared as a nullable TEXT UNIQUE column; it becomes
+  // populated (and later NOT NULL) once the identity/producer switch sets User.id to the
+  // internal UUIDv7 U and separates K into keycloakSub. No @default(): id is explicitly
+  // required from the provisioning layer.
+  id          String @id @map("id") @db.Uuid
+  username    String @unique @map("username")
+  keycloakSub String? @unique @map("keycloak_sub") @db.Text
 
   userType     UserType      @map("user_type")
   status       PersonStatus  @default(ACTIVE) @map("status")
