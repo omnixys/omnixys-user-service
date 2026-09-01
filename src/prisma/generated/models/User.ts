@@ -164,7 +164,7 @@ export type UserGroupByArgs<ExtArgs extends runtime.Types.Extensions.InternalArg
 export type UserGroupByOutputType = {
   id: string
   username: string
-  keycloakSub: string | null
+  keycloakSub: string
   userType: $Enums.UserType
   status: $Enums.PersonStatus
   createdAt: Date
@@ -195,7 +195,7 @@ export type UserWhereInput = {
   NOT?: Prisma.UserWhereInput | Prisma.UserWhereInput[]
   id?: Prisma.UuidFilter<"User"> | string
   username?: Prisma.StringFilter<"User"> | string
-  keycloakSub?: Prisma.StringNullableFilter<"User"> | string | null
+  keycloakSub?: Prisma.StringFilter<"User"> | string
   userType?: Prisma.EnumUserTypeFilter<"User"> | $Enums.UserType
   status?: Prisma.EnumPersonStatusFilter<"User"> | $Enums.PersonStatus
   createdAt?: Prisma.DateTimeFilter<"User"> | Date | string
@@ -209,7 +209,7 @@ export type UserWhereInput = {
 export type UserOrderByWithRelationInput = {
   id?: Prisma.SortOrder
   username?: Prisma.SortOrder
-  keycloakSub?: Prisma.SortOrderInput | Prisma.SortOrder
+  keycloakSub?: Prisma.SortOrder
   userType?: Prisma.SortOrder
   status?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -240,7 +240,7 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
 export type UserOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
   username?: Prisma.SortOrder
-  keycloakSub?: Prisma.SortOrderInput | Prisma.SortOrder
+  keycloakSub?: Prisma.SortOrder
   userType?: Prisma.SortOrder
   status?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -256,7 +256,7 @@ export type UserScalarWhereWithAggregatesInput = {
   NOT?: Prisma.UserScalarWhereWithAggregatesInput | Prisma.UserScalarWhereWithAggregatesInput[]
   id?: Prisma.UuidWithAggregatesFilter<"User"> | string
   username?: Prisma.StringWithAggregatesFilter<"User"> | string
-  keycloakSub?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
+  keycloakSub?: Prisma.StringWithAggregatesFilter<"User"> | string
   userType?: Prisma.EnumUserTypeWithAggregatesFilter<"User"> | $Enums.UserType
   status?: Prisma.EnumPersonStatusWithAggregatesFilter<"User"> | $Enums.PersonStatus
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"User"> | Date | string
@@ -266,7 +266,7 @@ export type UserScalarWhereWithAggregatesInput = {
 export type UserCreateInput = {
   id: string
   username: string
-  keycloakSub?: string | null
+  keycloakSub: string
   userType: $Enums.UserType
   status?: $Enums.PersonStatus
   createdAt?: Date | string
@@ -280,7 +280,7 @@ export type UserCreateInput = {
 export type UserUncheckedCreateInput = {
   id: string
   username: string
-  keycloakSub?: string | null
+  keycloakSub: string
   userType: $Enums.UserType
   status?: $Enums.PersonStatus
   createdAt?: Date | string
@@ -294,7 +294,7 @@ export type UserUncheckedCreateInput = {
 export type UserUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   username?: Prisma.StringFieldUpdateOperationsInput | string
-  keycloakSub?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  keycloakSub?: Prisma.StringFieldUpdateOperationsInput | string
   userType?: Prisma.EnumUserTypeFieldUpdateOperationsInput | $Enums.UserType
   status?: Prisma.EnumPersonStatusFieldUpdateOperationsInput | $Enums.PersonStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -308,7 +308,7 @@ export type UserUpdateInput = {
 export type UserUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   username?: Prisma.StringFieldUpdateOperationsInput | string
-  keycloakSub?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  keycloakSub?: Prisma.StringFieldUpdateOperationsInput | string
   userType?: Prisma.EnumUserTypeFieldUpdateOperationsInput | $Enums.UserType
   status?: Prisma.EnumPersonStatusFieldUpdateOperationsInput | $Enums.PersonStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -322,7 +322,7 @@ export type UserUncheckedUpdateInput = {
 export type UserCreateManyInput = {
   id: string
   username: string
-  keycloakSub?: string | null
+  keycloakSub: string
   userType: $Enums.UserType
   status?: $Enums.PersonStatus
   createdAt?: Date | string
@@ -332,7 +332,7 @@ export type UserCreateManyInput = {
 export type UserUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   username?: Prisma.StringFieldUpdateOperationsInput | string
-  keycloakSub?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  keycloakSub?: Prisma.StringFieldUpdateOperationsInput | string
   userType?: Prisma.EnumUserTypeFieldUpdateOperationsInput | $Enums.UserType
   status?: Prisma.EnumPersonStatusFieldUpdateOperationsInput | $Enums.PersonStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -342,7 +342,7 @@ export type UserUpdateManyMutationInput = {
 export type UserUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   username?: Prisma.StringFieldUpdateOperationsInput | string
-  keycloakSub?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  keycloakSub?: Prisma.StringFieldUpdateOperationsInput | string
   userType?: Prisma.EnumUserTypeFieldUpdateOperationsInput | $Enums.UserType
   status?: Prisma.EnumPersonStatusFieldUpdateOperationsInput | $Enums.PersonStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -386,10 +386,6 @@ export type UserScalarRelationFilter = {
 
 export type StringFieldUpdateOperationsInput = {
   set?: string
-}
-
-export type NullableStringFieldUpdateOperationsInput = {
-  set?: string | null
 }
 
 export type EnumUserTypeFieldUpdateOperationsInput = {
@@ -463,7 +459,7 @@ export type UserUpdateOneRequiredWithoutContactsNestedInput = {
 export type UserCreateWithoutPersonalInfoInput = {
   id: string
   username: string
-  keycloakSub?: string | null
+  keycloakSub: string
   userType: $Enums.UserType
   status?: $Enums.PersonStatus
   createdAt?: Date | string
@@ -476,7 +472,7 @@ export type UserCreateWithoutPersonalInfoInput = {
 export type UserUncheckedCreateWithoutPersonalInfoInput = {
   id: string
   username: string
-  keycloakSub?: string | null
+  keycloakSub: string
   userType: $Enums.UserType
   status?: $Enums.PersonStatus
   createdAt?: Date | string
@@ -505,7 +501,7 @@ export type UserUpdateToOneWithWhereWithoutPersonalInfoInput = {
 export type UserUpdateWithoutPersonalInfoInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   username?: Prisma.StringFieldUpdateOperationsInput | string
-  keycloakSub?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  keycloakSub?: Prisma.StringFieldUpdateOperationsInput | string
   userType?: Prisma.EnumUserTypeFieldUpdateOperationsInput | $Enums.UserType
   status?: Prisma.EnumPersonStatusFieldUpdateOperationsInput | $Enums.PersonStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -518,7 +514,7 @@ export type UserUpdateWithoutPersonalInfoInput = {
 export type UserUncheckedUpdateWithoutPersonalInfoInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   username?: Prisma.StringFieldUpdateOperationsInput | string
-  keycloakSub?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  keycloakSub?: Prisma.StringFieldUpdateOperationsInput | string
   userType?: Prisma.EnumUserTypeFieldUpdateOperationsInput | $Enums.UserType
   status?: Prisma.EnumPersonStatusFieldUpdateOperationsInput | $Enums.PersonStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -531,7 +527,7 @@ export type UserUncheckedUpdateWithoutPersonalInfoInput = {
 export type UserCreateWithoutCustomerInput = {
   id: string
   username: string
-  keycloakSub?: string | null
+  keycloakSub: string
   userType: $Enums.UserType
   status?: $Enums.PersonStatus
   createdAt?: Date | string
@@ -544,7 +540,7 @@ export type UserCreateWithoutCustomerInput = {
 export type UserUncheckedCreateWithoutCustomerInput = {
   id: string
   username: string
-  keycloakSub?: string | null
+  keycloakSub: string
   userType: $Enums.UserType
   status?: $Enums.PersonStatus
   createdAt?: Date | string
@@ -573,7 +569,7 @@ export type UserUpdateToOneWithWhereWithoutCustomerInput = {
 export type UserUpdateWithoutCustomerInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   username?: Prisma.StringFieldUpdateOperationsInput | string
-  keycloakSub?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  keycloakSub?: Prisma.StringFieldUpdateOperationsInput | string
   userType?: Prisma.EnumUserTypeFieldUpdateOperationsInput | $Enums.UserType
   status?: Prisma.EnumPersonStatusFieldUpdateOperationsInput | $Enums.PersonStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -586,7 +582,7 @@ export type UserUpdateWithoutCustomerInput = {
 export type UserUncheckedUpdateWithoutCustomerInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   username?: Prisma.StringFieldUpdateOperationsInput | string
-  keycloakSub?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  keycloakSub?: Prisma.StringFieldUpdateOperationsInput | string
   userType?: Prisma.EnumUserTypeFieldUpdateOperationsInput | $Enums.UserType
   status?: Prisma.EnumPersonStatusFieldUpdateOperationsInput | $Enums.PersonStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -599,7 +595,7 @@ export type UserUncheckedUpdateWithoutCustomerInput = {
 export type UserCreateWithoutEmployeeInput = {
   id: string
   username: string
-  keycloakSub?: string | null
+  keycloakSub: string
   userType: $Enums.UserType
   status?: $Enums.PersonStatus
   createdAt?: Date | string
@@ -612,7 +608,7 @@ export type UserCreateWithoutEmployeeInput = {
 export type UserUncheckedCreateWithoutEmployeeInput = {
   id: string
   username: string
-  keycloakSub?: string | null
+  keycloakSub: string
   userType: $Enums.UserType
   status?: $Enums.PersonStatus
   createdAt?: Date | string
@@ -641,7 +637,7 @@ export type UserUpdateToOneWithWhereWithoutEmployeeInput = {
 export type UserUpdateWithoutEmployeeInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   username?: Prisma.StringFieldUpdateOperationsInput | string
-  keycloakSub?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  keycloakSub?: Prisma.StringFieldUpdateOperationsInput | string
   userType?: Prisma.EnumUserTypeFieldUpdateOperationsInput | $Enums.UserType
   status?: Prisma.EnumPersonStatusFieldUpdateOperationsInput | $Enums.PersonStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -654,7 +650,7 @@ export type UserUpdateWithoutEmployeeInput = {
 export type UserUncheckedUpdateWithoutEmployeeInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   username?: Prisma.StringFieldUpdateOperationsInput | string
-  keycloakSub?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  keycloakSub?: Prisma.StringFieldUpdateOperationsInput | string
   userType?: Prisma.EnumUserTypeFieldUpdateOperationsInput | $Enums.UserType
   status?: Prisma.EnumPersonStatusFieldUpdateOperationsInput | $Enums.PersonStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -667,7 +663,7 @@ export type UserUncheckedUpdateWithoutEmployeeInput = {
 export type UserCreateWithoutContactsInput = {
   id: string
   username: string
-  keycloakSub?: string | null
+  keycloakSub: string
   userType: $Enums.UserType
   status?: $Enums.PersonStatus
   createdAt?: Date | string
@@ -680,7 +676,7 @@ export type UserCreateWithoutContactsInput = {
 export type UserUncheckedCreateWithoutContactsInput = {
   id: string
   username: string
-  keycloakSub?: string | null
+  keycloakSub: string
   userType: $Enums.UserType
   status?: $Enums.PersonStatus
   createdAt?: Date | string
@@ -709,7 +705,7 @@ export type UserUpdateToOneWithWhereWithoutContactsInput = {
 export type UserUpdateWithoutContactsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   username?: Prisma.StringFieldUpdateOperationsInput | string
-  keycloakSub?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  keycloakSub?: Prisma.StringFieldUpdateOperationsInput | string
   userType?: Prisma.EnumUserTypeFieldUpdateOperationsInput | $Enums.UserType
   status?: Prisma.EnumPersonStatusFieldUpdateOperationsInput | $Enums.PersonStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -722,7 +718,7 @@ export type UserUpdateWithoutContactsInput = {
 export type UserUncheckedUpdateWithoutContactsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   username?: Prisma.StringFieldUpdateOperationsInput | string
-  keycloakSub?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  keycloakSub?: Prisma.StringFieldUpdateOperationsInput | string
   userType?: Prisma.EnumUserTypeFieldUpdateOperationsInput | $Enums.UserType
   status?: Prisma.EnumPersonStatusFieldUpdateOperationsInput | $Enums.PersonStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -830,7 +826,7 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
     username: string
-    keycloakSub: string | null
+    keycloakSub: string
     userType: $Enums.UserType
     status: $Enums.PersonStatus
     createdAt: Date

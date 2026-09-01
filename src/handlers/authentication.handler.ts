@@ -89,7 +89,8 @@ export class AuthenticationHandler {
     );
 
     return TraceRunner.run('[HANDLER] createGuest', async () => {
-      const { token, userId, username, email, invitationId } = payload;
+      const { token, userId, keycloakSub, username, email, invitationId } =
+        payload;
 
       this.log.debug(
         'Kafka processing started: topic=%s | userId=%s | invitationId=%s',
@@ -125,6 +126,7 @@ export class AuthenticationHandler {
 
         const finalInput: CreateGuestUserDTO = {
           userId,
+          keycloakSub,
           username,
           email,
           firstName: invitee.firstName,
@@ -209,7 +211,7 @@ export class AuthenticationHandler {
     );
 
     return TraceRunner.run('[HANDLER] createUser', async () => {
-      const { token, userId } = payload;
+      const { token, userId, keycloakSub } = payload;
 
       this.log.debug(
         'Kafka processing started: topic=%s | userId=%s',
@@ -220,6 +222,10 @@ export class AuthenticationHandler {
       try {
         if (!token) {
           throw new UserStateException('signup-token-missing');
+        }
+
+        if (!userId || !keycloakSub) {
+          throw new UserStateException('identity-incomplete');
         }
 
         const decryptedToken = this.encryptionService.decrypt(token, true);
@@ -237,7 +243,7 @@ export class AuthenticationHandler {
         const parsed = JSON.parse(raw) as SignupVerificationUserCache;
         const input = parsed.userData;
 
-        await this.registerService.create(input, userId);
+        await this.registerService.create(input, { userId, keycloakSub });
 
         this.log.debug(
           'Kafka processing completed: topic=%s | userId=%s',
@@ -273,6 +279,10 @@ export class AuthenticationHandler {
     );
 
     try {
+      if (!payload.userId || !payload.keycloakSub) {
+        throw new UserStateException('identity-incomplete');
+      }
+
       await this.registerService.createProviderUser(payload);
 
       this.log.debug(
