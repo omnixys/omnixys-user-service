@@ -11,7 +11,7 @@ Omnixys User Service – user profiles, admin, analytics.
 
 - Repository path: `services/user` (relative to the Omnixys root)
 - Package: `user-service` (version: 3.4.0)
-- Runtime: Node >=25.8.2 (pnpm >=10.33.0)
+- Runtime: Node >=26.8.1 <27 (pnpm >=11.24.0)
 - Kind: Service
 
 ## Architecture
@@ -32,7 +32,7 @@ src/adapter, admin, analytics, config, core, handlers, prisma, security, user
 ## Commands
 
 Commands below are the authoritative validation commands for this repository. Run them
-with the appropriate tooling (observed versions: node 26.6.0, pnpm 11.20.0, uv 0.12.1, java 26.0.2).
+with the appropriate tooling (observed versions: node 26.8.1, pnpm 11.24.0, uv 0.12.8, java 26.0.2).
 
 ### Install
 
@@ -95,6 +95,15 @@ node --test __tests__/unit/*.test.mjs and __tests__/integration/*.test.mjs; Jest
 ## Repository-Specific Rules
 
 Personal data: privacy, PII handling, and tenant isolation are critical.
+
+Identity semantics (transitional, Phase 2): `User.id` is the primary key and, under the
+current provisioning flow, equals the Keycloak subject (`id == K`, sourced from the Kafka
+`userId`). `User.keycloakSub` is an opaque nullable TEXT (mapped `keycloak_sub`, UNIQUE)
+prepared for the identity migration; it is not yet populated (`NULL`) and is distinct from
+`id`. The producer still writes `id = K`. A later producer/identity switch evolves the model
+to `User.id = U` (UUIDv7) with `keycloakSub = K`; the `uuidv7()` DB default and any NOT NULL
+enforcement on `keycloak_sub` arrive only with that switch. Keep `User.id` explicitly
+required (no `@default`) and do NOT introduce a second UUID generator.
 
 ## Development Skill
 
