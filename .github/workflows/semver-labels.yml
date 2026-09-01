@@ -17,16 +17,31 @@ jobs:
           script: |
             const title = context.payload.pull_request.title;
 
-            const labels = [];
-            if (title.startsWith('fix')) labels.push('semver:patch');
-            if (title.startsWith('feat!')) labels.push('semver:major');
-            else if (title.startsWith('feat')) labels.push('semver:minor');
-
-            if (labels.length > 0) {
-              await github.rest.issues.addLabels({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                issue_number: context.issue.number,
-                labels
-              });
+            // Conventional-commit prefix, where scope is optional: type or type(scope)
+            const match = /^([a-z]+)(?:\([^)]*\))?!*:\s/.exec(title);
+            if (!match) {
+              console.log('No conventional-commit prefix matched; skipping');
+              return;
             }
+            const type = match[1];
+
+            // Release semantics (authoritative):
+            //   breaking            -> semver:major
+            //   feat                -> semver:minor
+            //   fix|perf|refactor|revert|update -> semver:patch
+            //   docs|style|test|chore|ci|build   -> no release label
+            let label;
+            if (type === 'breaking') label = 'semver:major';
+            else if (type === 'feat') label = 'semver:minor';
+            else if (['fix', 'perf', 'refactor', 'revert', 'update'].includes(type)) label = 'semver:patch';
+            else {
+              console.log(`Type "${type}" does not trigger a release; skipping`);
+              return;
+            }
+
+            await github.rest.issues.addLabels({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              labels: [label]
+            });
