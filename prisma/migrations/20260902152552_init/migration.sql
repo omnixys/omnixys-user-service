@@ -32,6 +32,7 @@ CREATE TYPE "contact_options_type" AS ENUM ('EMAIL', 'PHONE', 'SMS', 'WHATSAPP',
 CREATE TABLE "user" (
     "id" UUID NOT NULL,
     "username" TEXT NOT NULL,
+    "keycloak_sub" TEXT NOT NULL,
     "user_type" "user_type" NOT NULL,
     "status" "person_status" NOT NULL DEFAULT 'ACTIVE',
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -151,8 +152,31 @@ CREATE TABLE "customer_interest" (
     CONSTRAINT "customer_interest_pkey" PRIMARY KEY ("id")
 );
 
+-- CreateTable
+CREATE TABLE "analytics_outbox" (
+    "id" UUID NOT NULL,
+    "tenant_id" UUID NOT NULL,
+    "topic" TEXT NOT NULL,
+    "payload" JSONB NOT NULL,
+    "correlation_id" TEXT,
+    "actor_id" TEXT,
+    "attempts" INTEGER NOT NULL DEFAULT 0,
+    "next_attempt_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "locked_at" TIMESTAMP(3),
+    "locked_by" TEXT,
+    "published_at" TIMESTAMP(3),
+    "dead_lettered_at" TIMESTAMP(3),
+    "last_error" TEXT,
+    "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT "analytics_outbox_pkey" PRIMARY KEY ("id")
+);
+
 -- CreateIndex
 CREATE UNIQUE INDEX "user_username_key" ON "user"("username");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "user_keycloak_sub_key" ON "user"("keycloak_sub");
 
 -- CreateIndex
 CREATE INDEX "user_status_idx" ON "user"("status");
@@ -222,6 +246,9 @@ CREATE INDEX "customer_interest_interest_id_idx" ON "customer_interest"("interes
 
 -- CreateIndex
 CREATE UNIQUE INDEX "customer_interest_customer_id_interest_id_key" ON "customer_interest"("customer_id", "interest_id");
+
+-- CreateIndex
+CREATE INDEX "analytics_outbox_published_at_dead_lettered_at_next_attempt_idx" ON "analytics_outbox"("published_at", "dead_lettered_at", "next_attempt_at");
 
 -- AddForeignKey
 ALTER TABLE "personal_info" ADD CONSTRAINT "personal_info_id_fkey" FOREIGN KEY ("id") REFERENCES "user"("id") ON DELETE CASCADE ON UPDATE CASCADE;
