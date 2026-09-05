@@ -3,6 +3,42 @@
 All notable changes in this project will be documented in this file.
 
 
+## [4.0.0](https://github.com/omnixys/user-service/compare/v3.4.5...v4.0.0) (2026-09-05)
+
+### Deps
+
+* **Deps:** update omnixys deps ([](https://github.com/omnixys/user-service/commit/ee6b51ea3d93b7f18feddde4241635683062af08))
+* **Deps:** use local contracts dependency for identity work ([](https://github.com/omnixys/user-service/commit/bdcfa1878d1f8d0762489413790677b3fbd3b045))
+
+### Docker
+
+* **Docker:** align service runtime image to node 26 and pnpm 11 ([](https://github.com/omnixys/user-service/commit/2397a632012974ac2c68bfeabb35075b4fc1b5c9))
+
+### Identity
+
+* **Identity:** document final U/K identity semantics ([](https://github.com/omnixys/user-service/commit/05423f4297623fc6ac8507006fb3b7eb2ef0db12))
+* **Identity:** document transitional identity model and toolchain ([](https://github.com/omnixys/user-service/commit/f825d18a68aaa6d866538c4589d9df640fa85328))
+* **Identity:** add nullable keycloak subject and drop unused id default ([](https://github.com/omnixys/user-service/commit/3e15207ae544be03637cc01732d4cf1e468d4003))
+* **Identity:** consume canonical user identities ([](https://github.com/omnixys/user-service/commit/022c439a631703e2f989c62d230ad25e0651984b))
+
+### Logging
+
+* **Logging:** add service:user provenance source to logger acquisitions ([](https://github.com/omnixys/user-service/commit/0c13d9f1cc47af0344923f6248b4f4717ce129eb))
+* **Logging:** add missing format placeholders to structured log calls ([](https://github.com/omnixys/user-service/commit/89a198e1c4737e019461f440dd8a451a37fc157f))
+
+### Other
+
+* **Other:** Merge pull request #47 from omnixys/migration/uuid-v7 ([](https://github.com/omnixys/user-service/commit/beb67f255260effdd580f70e26b0c73a511fbcc3)), closes [#47](https://github.com/omnixys/user-service/issues/47)
+
+### Runtime
+
+* **Runtime:** align github actions toolchain and label mapping ([](https://github.com/omnixys/user-service/commit/8f1a0461f27720e1c33cb1f88efa01aa31be3d36))
+* **Runtime:** align service runtime with node 26 and pnpm 11 ([](https://github.com/omnixys/user-service/commit/d1336b85c904143e7937d5ec1b04ff77961795b9))
+
+### Semver
+
+* **Semver:** align labels with release convention ([](https://github.com/omnixys/user-service/commit/7ee8d593b19af15d69b734b8c667db5d6e0b285d))
+
 ## [3.4.5](https://github.com/omnixys/user-service/compare/v3.4.4...v3.4.5) (2026-08-28)
 
 ### Deps
