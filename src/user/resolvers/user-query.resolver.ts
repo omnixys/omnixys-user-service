@@ -26,7 +26,7 @@ export class UserQueryResolver {
     private readonly logger: OmnixysLogger,
     private readonly service: UserReadService,
   ) {
-    this.log = this.logger.log(this.constructor.name);
+    this.log = this.logger.log(this.constructor.name, 'service:user');
   }
 
   /* ------------------------------------------------------------------

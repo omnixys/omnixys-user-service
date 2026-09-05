@@ -11,8 +11,13 @@ datasource db {
 /// USER SERVICE SCHEMA
 /// ------------------------------------------------------------
 model User {
-  id       String @id @default(uuid()) @map("id") @db.Uuid
-  username String @unique @map("username")
+  // Final identity model: User.id is the internal Omnixys UUIDv7 (U), propagated by
+  // Authentication via the provisioning events (userId). It is generated once by
+  // Authentication; the user service NEVER generates it and supplies no @default().
+  // keycloakSub (K) is the external Keycloak subject bound to this identity (U != K).
+  id          String @id @map("id") @db.Uuid
+  username    String @unique @map("username")
+  keycloakSub String @unique @map("keycloak_sub") @db.Text
 
   userType     UserType      @map("user_type")
   status       PersonStatus  @default(ACTIVE) @map("status")

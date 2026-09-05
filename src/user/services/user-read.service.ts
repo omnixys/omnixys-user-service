@@ -28,7 +28,7 @@ export class UserReadService {
     private readonly prisma: PrismaService,
     private readonly logger: OmnixysLogger,
   ) {
-    this.log = this.logger.log(this.constructor.name);
+    this.log = this.logger.log(this.constructor.name, 'service:user');
   }
 
   async findAll(): Promise<User[]> {

@@ -2,6 +2,7 @@
 
 import { type User } from '../../prisma/generated/client.js';
 import { PrismaService } from '../../prisma/prisma.service.js';
+import { UserStateException } from '../errors/user.error.js';
 import { Injectable } from '@nestjs/common';
 import {
   PhoneNumberDTO,
@@ -21,6 +22,7 @@ export interface CreateGuestUserDTO {
   phoneNumbers?: PhoneNumberDTO[];
   actorId: string;
   userId: string;
+  keycloakSub: string;
   username: string;
 }
 
@@ -33,13 +35,25 @@ export class RegisterService {
     private readonly kafkaProducerService: KafkaProducerService,
     private readonly logger: OmnixysLogger,
   ) {
-    this.log = this.logger.log(this.constructor.name);
+    this.log = this.logger.log(this.constructor.name, 'service:user');
   }
 
-  async create(input: CreateUserInput, id: string): Promise<User> {
+  async create(
+    input: CreateUserInput,
+    identity: { userId: string; keycloakSub: string },
+  ): Promise<User> {
     return TraceRunner.run('Create User', async () => {
-      this.log.info('User creation started: userId=%s', id);
-      this.log.debug('Creating user in database: userId=%s', id);
+      this.log.info(
+        'User creation started: userId=%s keycloakSub=%s',
+        identity.userId,
+        identity.keycloakSub,
+      );
+      this.log.debug('Creating user in database: userId=%s', identity.userId);
+
+      if (!identity.userId || !identity.keycloakSub) {
+        throw new UserStateException('identity-incomplete');
+      }
+      const { userId, keycloakSub } = identity;
 
       const createdUser = await this.prisma.$transaction(async (tx) => {
         /* ------------------------------------------------------------
@@ -47,7 +61,8 @@ export class RegisterService {
          * ------------------------------------------------------------ */
         const user = await tx.user.create({
           data: {
-            id,
+            id: userId,
+            keycloakSub,
             username: input.username,
             userType: input.userType,
             status: StatusType.ACTIVE,
@@ -59,7 +74,7 @@ export class RegisterService {
          * ------------------------------------------------------------ */
         await tx.personalInfo.create({
           data: {
-            id,
+            id: userId,
             email: input.personalInfo.email,
             firstName: input.personalInfo.firstName,
             lastName: input.personalInfo.lastName,
@@ -86,7 +101,7 @@ export class RegisterService {
         if (input.userType === UserType.CUSTOMER && input.customer) {
           await tx.customer.create({
             data: {
-              id,
+              id: userId,
               subscribed: input.customer.subscribed,
               state: input.customer.state ?? StatusType.ACTIVE,
               contactOptions: input.customer.contactOptions,
@@ -105,7 +120,7 @@ export class RegisterService {
         if (input.userType === UserType.EMPLOYEE && input.employee) {
           await tx.employee.create({
             data: {
-              id,
+              id: userId,
               department: input.employee.department,
               position: input.employee.position,
               role: input.employee.role,
@@ -122,7 +137,7 @@ export class RegisterService {
         if (input.contacts?.length) {
           await tx.contact.createMany({
             data: input.contacts.map((c) => ({
-              userId: id,
+              userId,
               contactId: c.contactId,
               relationship: c.relationship,
               withdrawalLimit: c.withdrawalLimit ?? 0,
@@ -153,10 +168,10 @@ export class RegisterService {
         return user;
       });
 
-      this.log.debug('Database user creation completed: userId=%s', id);
-      this.log.info('User creation completed: userId=%s', id);
+      this.log.debug('Database user creation completed: userId=%s', userId);
+      this.log.info('User creation completed: userId=%s', userId);
 
-      void this.emitProjectionChanged(id);
+      void this.emitProjectionChanged(userId);
 
       return createdUser;
     });
@@ -164,11 +179,16 @@ export class RegisterService {
 
   async createProviderUser(input: {
     userId: string;
+    keycloakSub: string;
     email?: string;
     username?: string;
   }): Promise<void> {
     this.log.info('Provider user creation started: userId=%s', input.userId);
-    this.log.debug('Creating provider user in database: userId=%s', input.userId);
+
+    if (!input.userId || !input.keycloakSub) {
+      throw new UserStateException('identity-incomplete');
+    }
+    const { userId, keycloakSub } = input;
 
     await this.prisma.$transaction(async (tx) => {
       /* ------------------------------------------------------------
@@ -176,7 +196,8 @@ export class RegisterService {
        * ------------------------------------------------------------ */
       await tx.user.create({
         data: {
-          id: input.userId,
+          id: userId,
+          keycloakSub,
           username: input.username ?? input.email ?? '',
           userType: UserType.CUSTOMER,
           status: 'ACTIVE',
@@ -184,10 +205,10 @@ export class RegisterService {
       });
     });
 
-    this.log.debug('Database provider user creation completed: userId=%s', input.userId);
-    this.log.info('Provider user creation completed: userId=%s', input.userId);
+    this.log.debug('Database provider user creation completed: userId=%s', userId);
+    this.log.info('Provider user creation completed: userId=%s', userId);
 
-    void this.emitProjectionChanged(input.userId);
+    void this.emitProjectionChanged(userId);
   }
 
   async isUsernameAvailable(username: string): Promise<boolean> {
@@ -227,15 +248,19 @@ export class RegisterService {
 
   async createGuest(input: CreateGuestUserDTO) {
     return TraceRunner.run('[SERVICE] createGuest', async () => {
-      const { userId, username, email, firstName, lastName, phoneNumbers } = input;
+      const { userId, keycloakSub, username, email, firstName, lastName, phoneNumbers } = input;
 
       this.log.info('Guest user creation started: userId=%s', userId);
-      this.log.debug('Creating guest user in database: userId=%s', userId);
+
+      if (!userId || !keycloakSub) {
+        throw new UserStateException('identity-incomplete');
+      }
 
       const createdGuest = await this.prisma.$transaction(async (tx) => {
         await tx.user.create({
           data: {
             id: userId,
+            keycloakSub,
             username,
             userType: UserType.GUEST,
             status: StatusType.ACTIVE,
