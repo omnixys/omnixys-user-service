@@ -34,7 +34,7 @@ export class UserWriteService {
     private readonly logger: OmnixysLogger,
     private readonly analyticsOutbox: AnalyticsOutboxService,
   ) {
-    this.log = this.logger.log(this.constructor.name);
+    this.log = this.logger.log(this.constructor.name, 'service:user');
   }
 
   /* ------------------------------------------------------------------

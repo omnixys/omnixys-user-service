@@ -23,11 +23,6 @@ on:
   push:
     branches:
       - main
-      - '!release'
-  pull_request:
-    branches:
-      - '**'
-      - '!release'
 
 concurrency:
   group: ci-${{ github.ref }}
@@ -67,10 +62,10 @@ jobs:
         with:
           version: 11.24.0
 
-      - name: ⚙️ Setup Node.js 26.8.1
+      - name: ⚙️ Setup Node.js
         uses: actions/setup-node@v6
         with:
-          node-version: 26.8.1
+          node-version: '26.8.1'
           cache: 'pnpm'
 
       - name: ♻️ Restore pnpm cache
@@ -127,10 +122,10 @@ jobs:
         with:
           version: 11.24.0
 
-      - name: ⚙️ Setup Node.js 26.8.1
+      - name: ⚙️ Setup Node.js
         uses: actions/setup-node@v6
         with:
-          node-version: 26.8.1
+          node-version: '26.8.1'
           cache: 'pnpm'
 
       - name: ♻️ Restore pnpm cache

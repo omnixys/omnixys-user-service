@@ -35,7 +35,7 @@ export class RegisterService {
     private readonly kafkaProducerService: KafkaProducerService,
     private readonly logger: OmnixysLogger,
   ) {
-    this.log = this.logger.log(this.constructor.name);
+    this.log = this.logger.log(this.constructor.name, 'service:user');
   }
 
   async create(
